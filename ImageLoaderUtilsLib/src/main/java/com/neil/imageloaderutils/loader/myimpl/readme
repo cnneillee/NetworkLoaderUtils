@@ -1,0 +1,11 @@
+# com.neil.imageloaderutils.loader.myimpl说明
+
+## 概述
+
+将实现类从业务逻辑中抽离出来，能够有效地降低业务逻辑与具体实现的耦合度，从而降低在后期维护（如功能的添加与修改、加载类库变动等）的成本，也能使得代码条理清晰、可读性强。
+
+## 使用
+
+使用者可以将自己写的IImageLoaderWrapper的实现类放在此包下，同时注意将com.neil.imageloaderutils.LoaderFactory的new ExampleImageLoader()换成自己写的实现类
+
+
