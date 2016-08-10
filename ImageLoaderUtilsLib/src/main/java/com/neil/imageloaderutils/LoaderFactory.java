@@ -5,6 +5,8 @@ package com.neil.imageloaderutils;
  * 邮箱：cn.neillee@gmail.com
  */
 
+import android.annotation.SuppressLint;
+import android.app.Application;
 import android.content.Context;
 import android.renderscript.Type;
 
@@ -22,12 +24,20 @@ import com.neil.imageloaderutils.wrapper.IImageLoaderWrapper;
 public class LoaderFactory {
     private static IImageLoaderWrapper sInstanceImageLoader;
     private static IContentLoaderWrapper sInstanceContentLoader;
+    private static TYPE sImageLoaderType;
 
     public enum TYPE {
         VOLLEY, UNIVERSIAL, FRESSCO
+
     }
 
     private LoaderFactory() {
+    }
+
+    public static void initialize(Context context, TYPE imageLoaderType) {
+        sImageLoaderType = imageLoaderType;
+        initializeWithType(context, imageLoaderType);
+        sInstanceImageLoader = getImageLoaderWithType(context, imageLoaderType);
     }
 
     /**
@@ -37,44 +47,41 @@ public class LoaderFactory {
      */
     public static IImageLoaderWrapper getImageLoader(Context context) {
         if (sInstanceImageLoader == null) {
-            synchronized (LoaderFactory.class) {
-                if (sInstanceImageLoader == null) {
-                    sInstanceImageLoader = new VolleyImageLoader(context);
-                }
-            }
+            throw new IllegalArgumentException("has not initialized");
         }
         return sInstanceImageLoader;
     }
-
-    private static int currentType = -1;
-    private static IImageLoaderWrapper[] wrapper = new IImageLoaderWrapper[3];
 
     /**
      * 获取图片加载器
      *
      * @return 返回IImageLoaderWrapper（接口），隐藏了具体的实现
      */
-    public static IImageLoaderWrapper getImageLoaderWithType(Context context, int type) {
-        sInstanceImageLoader = wrapper[type];
+    public static IImageLoaderWrapper getImageLoaderWithType(Context context, TYPE type) {
         if (sInstanceImageLoader == null) {
             synchronized (LoaderFactory.class) {
                 if (sInstanceImageLoader == null) {
-                    switch (type) {
-                        case 0:
-                            wrapper[type] = new FrescoImageLoader(context);
-                            break;
-                        case 1:
-                            wrapper[type] = new UniversalAndroidImageLoader(context);
-                            break;
-                        case 2:
-                            wrapper[type] = new VolleyImageLoader(context);
-                            break;
+                    if (type.equals(TYPE.FRESSCO)) {
+                        sInstanceImageLoader = new FrescoImageLoader(context);
+                    } else if (type.equals(TYPE.UNIVERSIAL)) {
+                        sInstanceImageLoader = new UniversalAndroidImageLoader(context);
+                    } else if (type.equals(TYPE.VOLLEY)) {
+                        sInstanceImageLoader = new VolleyImageLoader(context);
                     }
-                    sInstanceImageLoader = wrapper[type];
                 }
             }
         }
         return sInstanceImageLoader;
+    }
+
+    private static void initializeWithType(Context context, TYPE type) {
+        if (type.equals(TYPE.FRESSCO)) {
+            Initialize.initializeVolley(context);
+        } else if (type.equals(TYPE.UNIVERSIAL)) {
+            Initialize.initializeVolley(context);
+        } else if (type.equals(TYPE.VOLLEY)) {
+            Initialize.initializeVolley(context);
+        }
     }
 
     /**

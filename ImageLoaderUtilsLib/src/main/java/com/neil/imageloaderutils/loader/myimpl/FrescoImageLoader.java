@@ -41,18 +41,6 @@ public class FrescoImageLoader implements IImageLoaderWrapper {
      * 显示图片
      *
      * @param imageView 显示图片的ImageView
-     * @param imageFile 图片文件
-     * @param option    显示参数设置
-     */
-    @Override
-    public void displayImage(ImageView imageView, File imageFile, final DisplayOption option) {
-        displayImage(imageView, imageFile.getAbsolutePath(), option, null);
-    }
-
-    /**
-     * 显示图片
-     *
-     * @param imageView 显示图片的ImageView
      * @param imageUrl  图片资源的URL
      * @param option    显示参数设置
      */
@@ -88,7 +76,7 @@ public class FrescoImageLoader implements IImageLoaderWrapper {
         // 首先确保使用的是fresco的imageview控件
         if (!judgeIsSimpleDraweeView(imageView)) {
             Log.e(LOG_TAG, "请将控件定义为com.facebook.drawee.view.SimpleDraweeView");
-            return;
+            throw new IllegalArgumentException("请将控件定义为com.facebook.drawee.view.SimpleDraweeView");
         }
         final SimpleDraweeView simpleDraweeView = (SimpleDraweeView) imageView;
 
@@ -124,20 +112,20 @@ public class FrescoImageLoader implements IImageLoaderWrapper {
                 .build();
         simpleDraweeView.setController(controller);
     }
-
-    /**
-     * 图片下载
-     *
-     * @param context   上下文
-     * @param imageUrl  图片资源的URL
-     * @param imagePath 图片下载的目录
-     * @param imageName 图片保存路径
-     * @param listener  图片下载的监听事件
-     */
-    @Override
-    public void downloadImage(Context context, String imageUrl, String imagePath, int imageName, ImageDownloadListener listener) {
-
-    }
+//
+//    /**
+//     * 图片下载
+//     *
+//     * @param context   上下文
+//     * @param imageUrl  图片资源的URL
+//     * @param imagePath 图片下载的目录
+//     * @param imageName 图片保存路径
+//     * @param listener  图片下载的监听事件
+//     */
+//    @Override
+//    public void downloadImage(Context context, String imageUrl, String imagePath, int imageName, ImageDownloadListener listener) {
+//
+//    }
 
     /**
      * 由于Fresco的图片加载使用的是SimpleDraweeView类型，故此处进行判断

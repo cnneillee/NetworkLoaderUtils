@@ -19,15 +19,6 @@ public interface IImageLoaderWrapper {
      * 显示图片
      *
      * @param imageView 显示图片的ImageView
-     * @param imageFile 图片文件
-     * @param option    显示参数设置
-     */
-    void displayImage(ImageView imageView, File imageFile, DisplayOption option);
-
-    /**
-     * 显示图片
-     *
-     * @param imageView 显示图片的ImageView
      * @param imageUrl  图片资源的URL
      * @param option    显示参数设置
      */
@@ -54,16 +45,6 @@ public interface IImageLoaderWrapper {
      */
     void displayImage(ImageView imageView, String imageUrl, DisplayOption option, ImageLoadingListener listener, ImageLoadingProgressListener progressListener);
 
-    /**
-     * 图片下载
-     *
-     * @param context   上下文
-     * @param imageUrl  图片资源的URL
-     * @param imagePath 图片下载的目录
-     * @param listener  图片下载的监听事件
-     * @param imageName 图片保存路径
-     */
-    void downloadImage(Context context, String imageUrl, String imagePath, int imageName, ImageDownloadListener listener);
 
     /**
      * 图片加载参数

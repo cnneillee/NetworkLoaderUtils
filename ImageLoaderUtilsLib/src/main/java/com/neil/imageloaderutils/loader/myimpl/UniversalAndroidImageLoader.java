@@ -39,58 +39,12 @@ public class UniversalAndroidImageLoader implements IImageLoaderWrapper {
      * 显示图片
      *
      * @param imageView 显示图片的ImageView
-     * @param imageFile 图片文件
-     * @param option    显示参数设置
-     */
-    @Override
-    public void displayImage(ImageView imageView, File imageFile, DisplayOption option) {
-        int imageLoadingResId = R.drawable.img_default;
-        int imageErrorResId = R.drawable.img_error;
-        if (option != null) {
-            imageLoadingResId = option.loadingResId;
-            imageErrorResId = option.loadErrorResId;
-        }
-
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(imageLoadingResId)
-                .showImageForEmptyUri(imageErrorResId)
-                .showImageOnFail(imageErrorResId)
-                .cacheInMemory(true) //加载本地图片不需要再做SD卡缓存，只做内存缓存即可
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
-        String uri = ImageDownloader.Scheme.FILE.wrap(imageFile.getAbsolutePath());
-
-        ImageLoader.getInstance().displayImage(uri, imageView, options);
-    }
-
-    /**
-     * 显示图片
-     *
-     * @param imageView 显示图片的ImageView
      * @param imageUrl  图片资源的URL
      * @param option    显示参数设置
      */
     @Override
     public void displayImage(ImageView imageView, String imageUrl, DisplayOption option) {
-        int imageLoadingResId = R.drawable.img_default;
-        int imageErrorResId = R.drawable.img_error;
-        if (option != null) {
-            imageLoadingResId = option.loadingResId;
-            imageErrorResId = option.loadErrorResId;
-        }
-
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(imageLoadingResId)
-                .showImageForEmptyUri(imageErrorResId)
-                .showImageOnFail(imageErrorResId)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
-
-        ImageLoader.getInstance().displayImage(imageUrl, imageView, options);
+        this.displayImage(imageView, imageUrl, option, null, null);
     }
 
     /**
@@ -103,23 +57,7 @@ public class UniversalAndroidImageLoader implements IImageLoaderWrapper {
      */
     @Override
     public void displayImage(ImageView imageView, String imageUrl, DisplayOption option, final ImageLoadingListener listener) {
-        int imageLoadingResId = R.drawable.img_default;
-        int imageErrorResId = R.drawable.img_error;
-        if (option != null) {
-            imageLoadingResId = option.loadingResId;
-            imageErrorResId = option.loadErrorResId;
-        }
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(imageLoadingResId)
-                .showImageForEmptyUri(imageErrorResId)
-                .showImageOnFail(imageErrorResId)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
-
-        ImageLoader.getInstance().displayImage(imageUrl, imageView, options, loadingListenerTrans(listener));
+        this.displayImage(imageView, imageUrl, option, listener, null);
     }
 
     /**
@@ -162,20 +100,6 @@ public class UniversalAndroidImageLoader implements IImageLoaderWrapper {
             String uri = ImageDownloader.Scheme.HTTP.wrap(imageUrl);
             ImageLoader.getInstance().displayImage(uri, imageView, options, loadingListenerTrans(listener), progressListenerTrans(progressListener));
         }
-    }
-
-    @Override
-    public void downloadImage(final Context context, String imageUrl, final String imagePath, final int imageName, ImageDownloadListener listener) {
-        ImageRequest imageRequest = new ImageRequest(imageUrl, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap bitmap) {
-                //StorageOperatingHelper.savingStoryImgBitmap2SD(context, bitmap, imageName + "");
-                SDCardHelper.saveBitmapToSDCardPrivateCacheDir(bitmap, imagePath + imageName, context);
-                // ImageExternalDirectoryUtil.saveImgIntoCertainImgDirectory(context, bitmap, imageName, 100, ImageExternalDirectoryUtil.UtilType.STORY_IMG);
-            }
-        }, 0, 0, Bitmap.Config.ARGB_8888, null);
-//        ImageLoader.getInstance().d
-        //TODO 下载的不会写
     }
 
     /**
@@ -243,13 +167,11 @@ public class UniversalAndroidImageLoader implements IImageLoaderWrapper {
      */
     private com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener progressListenerTrans(final ImageLoadingProgressListener listener) {
         if (listener == null) return null;
-        com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener imageLoadingListener =
-                new com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener() {
-                    @Override
-                    public void onProgressUpdate(String s, View view, int i, int i1) {
-                        listener.onProgressUpdate(s, view, i, i1);
-                    }
-                };
-        return imageLoadingListener;
+        return new com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener() {
+            @Override
+            public void onProgressUpdate(String s, View view, int i, int i1) {
+                listener.onProgressUpdate(s, view, i, i1);
+            }
+        };
     }
 }

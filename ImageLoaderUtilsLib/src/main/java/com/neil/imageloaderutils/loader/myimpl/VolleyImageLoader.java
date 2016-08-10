@@ -44,34 +44,6 @@ public class VolleyImageLoader implements IImageLoaderWrapper {
      * 显示图片
      *
      * @param imageView 显示图片的ImageView
-     * @param imageFile 图片文件
-     * @param option    显示参数设置
-     */
-    @Override
-    public void displayImage(ImageView imageView, File imageFile, DisplayOption option) {
-        int imageLoadingResId = R.drawable.img_default;
-        int imageErrorResId = R.drawable.img_error;
-        if (option != null) {
-            imageLoadingResId = option.loadingResId;
-            imageErrorResId = option.loadErrorResId;
-        }
-
-        imageView.setImageResource(imageLoadingResId);
-
-        Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-
-        if (bitmap == null) {
-            Log.e(LOG_TAG, "解析图片文件出错，图片路径为:|" + imageFile.getAbsolutePath() + "|");
-            imageView.setImageResource(imageErrorResId);
-        } else {
-            imageView.setImageBitmap(bitmap);
-        }
-    }
-
-    /**
-     * 显示图片
-     *
-     * @param imageView 显示图片的ImageView
      * @param imageUrl  图片资源的URL
      * @param option    显示参数设置
      */
@@ -128,37 +100,37 @@ public class VolleyImageLoader implements IImageLoaderWrapper {
         mQueue.add(imageRequest);
     }
 
-    /**
-     * 显示图片
-     *
-     * @param context   上下文
-     * @param imageUrl  图片资源的URL
-     * @param imagePath 图片下载的目录
-     * @param imageName 图片保存路径
-     * @param listener  图片下载的监听事件
-     */
-    @Override
-    public void downloadImage(final Context context, final String imageUrl, final String imagePath, final int imageName, final ImageDownloadListener listener) {
-        listener.onDownoadingStarted(imageUrl, imagePath);
-
-        Response.Listener<Bitmap> bitmapListener = new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap response) {
-                boolean saveResult = SDCardHelper.saveBitmapToSDCardPrivateCacheDir(response, imagePath + imageName, context);
-                if (saveResult)
-                    listener.onDownloadingFailed(imagePath, new FailReason(FailReason.FailType.UNKNOWN, null), imagePath);
-                else
-                    listener.onDownloadingComplete(imageUrl, response, imagePath);
-            }
-        };
-        Response.ErrorListener errorListener = new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                listener.onDownloadingFailed(imageUrl, new FailReason(FailReason.FailType.UNKNOWN, error.getCause()), imagePath);
-            }
-        };
-
-        ImageRequest imageRequest = new ImageRequest(imageUrl, bitmapListener, 0, 0, Bitmap.Config.ARGB_8888, errorListener);
-        mQueue.add(imageRequest);
-    }
+//    /**
+//     * 显示图片
+//     *
+//     * @param context   上下文
+//     * @param imageUrl  图片资源的URL
+//     * @param imagePath 图片下载的目录
+//     * @param imageName 图片保存路径
+//     * @param listener  图片下载的监听事件
+//     */
+//    @Override
+//    public void downloadImage(final Context context, final String imageUrl, final String imagePath, final int imageName, final ImageDownloadListener listener) {
+//        listener.onDownoadingStarted(imageUrl, imagePath);
+//
+//        Response.Listener<Bitmap> bitmapListener = new Response.Listener<Bitmap>() {
+//            @Override
+//            public void onResponse(Bitmap response) {
+//                boolean saveResult = SDCardHelper.saveBitmapToSDCardPrivateCacheDir(response, imagePath + imageName, context);
+//                if (saveResult)
+//                    listener.onDownloadingFailed(imagePath, new FailReason(FailReason.FailType.UNKNOWN, null), imagePath);
+//                else
+//                    listener.onDownloadingComplete(imageUrl, response, imagePath);
+//            }
+//        };
+//        Response.ErrorListener errorListener = new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                listener.onDownloadingFailed(imageUrl, new FailReason(FailReason.FailType.UNKNOWN, error.getCause()), imagePath);
+//            }
+//        };
+//
+//        ImageRequest imageRequest = new ImageRequest(imageUrl, bitmapListener, 0, 0, Bitmap.Config.ARGB_8888, errorListener);
+//        mQueue.add(imageRequest);
+//    }
 }

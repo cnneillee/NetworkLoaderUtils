@@ -31,4 +31,6 @@ dependencies {
     compile 'com.facebook.fresco:fresco:0.12.0'
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile files('libs/universal-image-loader-1.9.5.jar')
+    compile 'com.google.code.gson:gson:2.7'
+    compile files('libs/okhttp-3.4.1.jar')
 }
